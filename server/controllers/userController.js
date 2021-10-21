@@ -38,7 +38,10 @@ const pool = mysql.createPool({
 });
 
 
- 
+//Landing Page
+exports.landingPg=(req,res)=>{
+    res.render("index", {layout: "lpg"})
+}
 
 exports.home=(req,res)=>{
     res.render("login",{ layout: "login" })
@@ -70,10 +73,10 @@ exports.login=(req,res)=>{
           try{ 
             if (row1[0].role_name ==="administrator") {
             
-              res.render("index",{row1:row2});
+              res.render("home",{row1:row2});
             } else if (row1[0].role_name === "staff") {
               console.log(row1[0].role_name)
-              res.render("index",{ row1:row2,layout: "staff" });
+              res.render("home",{ row1:row2,layout: "staff" });
               
             }          
           }catch(e){

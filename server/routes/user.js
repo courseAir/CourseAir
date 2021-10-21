@@ -3,8 +3,11 @@ const router = express.Router()
 const userController = require("../controllers/userController")
 const adminController = require("../controllers/adminController")
 
+//home
+router.get("/", userController.landingPg)
+
 //Login
-router.get("/", userController.home)
+router.get("/login", userController.home)
 router.post("/login",userController.login)
 
 //Render and add a base
