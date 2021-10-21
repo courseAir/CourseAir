@@ -1,0 +1,87 @@
+{{#if alert}}
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{alert}}
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+{{/if}}
+
+<div style="max-width: 800px;margin:auto;">
+  <table class="table table-bordered" >
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Course Name</th>
+        <th scope="col">Start Date</th>
+        <th scope="col">End Date</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      {{#each rows}}
+        <tr>
+          
+          <td>{{this.course_name}}</td>
+          <td>{{this.start_date}}</td>
+          <td>{{this.end_date}}</td>
+         
+      {{/each}}
+
+    </tbody>
+  </table>
+</div>
+
+<form class="row g-3 needs-validation" method="POST" action="/addCourse" style="max-width: 800px;margin:auto;">
+  
+    <div class="col-12 d-grid">
+      <label for="floatingInput">Course</label>
+      <input
+        type="text"
+        class="form-control"
+        id="floatingInput"
+        placeholder="Course Name"
+        name="issue"
+        required
+      />
+
+    </div>
+  
+
+  <div class="col-6">
+    <div class="col-12 d-grid">
+      <label for="floatingInput">Start Date</label>
+      <input
+        type="date"
+        class="form-control"
+        id="start_date"
+        placeholder="Start date"
+        name="issue"
+        required
+      />
+
+    </div>
+  </div>
+
+   <div class="col-6">
+    <div class="col-12 d-grid">
+      <label for="floatingInput">End Date</label>
+      <input
+        type="date"
+        class="form-control"
+        id="end_date"
+        placeholder="Start date"
+        name="issue"
+        required
+      />
+
+    </div>
+  </div>
+
+  <div class="col-12 d-grid">
+    <button class="btn btn-primary" type="submit">Add</button>
+  </div>
+
+</form>
