@@ -8,9 +8,12 @@
 /*--------------------------------------------------------------
 # General
 --------------------------------------------------------------*/
+
 body {
   font-family: 'Open Sans', sans-serif;
   color: #444444;
+  overflow: scroll;
+  overflow-x: hidden;
   overflow-y: hidden;
 }
 

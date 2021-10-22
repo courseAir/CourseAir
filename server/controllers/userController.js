@@ -15,10 +15,9 @@ const timeLeft= (row)=>{
   for (const index in row) {
    
      const now= moment()
-     const end= (row[index].end_date)
-     console.log(now.toString(),)
-     
-     const days=now.diff(end,'days') 
+     const end= moment((row[index].end_date)) 
+         
+     const days=end.diff(now,'days') 
      
      row[index]['timeleft']= `${days} day(s) left `
      
@@ -44,12 +43,13 @@ exports.landingPg=(req,res)=>{
 }
 
 exports.home=(req,res)=>{
-    res.render("login",{ layout: "login" })
+    res.render("login",{layout:"login"})
         
 }
 
 
 exports.login=(req,res)=>{
+  console.log(req.body)
     const { service_num,password}= req.body;
         
         pool.getConnection((err, connection) => {

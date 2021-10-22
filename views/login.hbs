@@ -1,16 +1,22 @@
+<form class="login100-form validate-form" method="POST" action="/login">
+				<span class="login100-form-title p-b-37">
+					Portal Login
+				</span>
 
+				<div class="wrap-input100 validate-input m-b-20" data-validate="Enter Service Number">
+					<input class="input100" type="text" name="service_num" placeholder="Service Number">
+					<span class="focus-input100"></span>
+				</div>
 
-<form method="POST" action="/login">
-  <h1 style="padding-bottom: 20px;">Login Page</h1>
-  <div class="mb-3">
-    <label for="exampleInputEmail1" class="form-label">Service Number</label>
-    <input type="text" class="form-control" id="floating-input" name="service_num">
+				<div class="wrap-input100 validate-input m-b-25" data-validate = "Enter password">
+					<input class="input100" type="password" name="password" placeholder="Password">
+					<span class="focus-input100"></span>
+				</div>
 
-  </div>
-  <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label" >Password</label>
-    <input type="password" class="form-control" id="floating-input" name="password">
-  </div>
-  
-  <button type="submit" class="btn btn-primary">Login</button>
+				<div class="container-login100-form-btn">
+					<button class="login100-form-btn" type="submit">
+						LOGIN
+					</button>
+				</div>
+
 </form>
