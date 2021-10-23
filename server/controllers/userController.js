@@ -73,7 +73,7 @@ exports.login=(req,res)=>{
           try{ 
             if (row1[0].role_name ==="administrator") {
             
-              res.render("home",{row1:row2});
+              res.render("admin",{row1:row2,layout: "main"});
             } else if (row1[0].role_name === "staff") {
               console.log(row1[0].role_name)
               res.render("home",{ row1:row2,layout: "staff" });
