@@ -1,15 +1,26 @@
+{{#if alert}}
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{alert}}
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+{{/if}}
 <form class="login100-form validate-form" method="POST" action="/login">
 				<span class="login100-form-title p-b-37">
 					Portal Login
 				</span>
 
 				<div class="wrap-input100 validate-input m-b-20" data-validate="Enter Service Number">
-					<input class="input100" type="text" name="service_num" placeholder="Service Number">
+					<input class="input100" type="text" name="service_num" placeholder="Service Number" required>
 					<span class="focus-input100"></span>
 				</div>
 
-				<div class="wrap-input100 validate-input m-b-25" data-validate = "Enter password">
-					<input class="input100" type="password" name="password" placeholder="Password">
+				<div class="wrap-input100 validate-input m-b-25" data-validate = "Enter password" >
+					<input class="input100" type="password" name="password" placeholder="Password" required>
 					<span class="focus-input100"></span>
 				</div>
 

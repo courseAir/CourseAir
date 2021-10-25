@@ -47,48 +47,53 @@ exports.home=(req,res)=>{
         
 }
 
-
-exports.login=(req,res)=>{
-  console.log(req.body)
-    const { service_num,password}= req.body;
-        
-        pool.getConnection((err, connection) => {
-        if (err) throw err;
-        console.log("Connected as ID" + connection.threadId);
-        //Use the connection
-        const sql =
-          "SELECT * FROM user,role WHERE service_num=? AND password= ? AND role.id=user.role;SELECT * FROM user,course WHERE user.course_id <>0 AND user.course_id=course.course_id"
-        connection.query(sql, [service_num, password], (err, rows) => {
-          connection.release();
-          console.log(rows)
-          const row = JSON.parse(JSON.stringify(rows));
-          const row1= row[0]
-          const row2= row[1]
-
+try{
+  exports.login=(req,res)=>{
+    console.log(req.body)
+      const { service_num,password}= req.body;
+      service_num_upper= service_num.toUpperCase()
+     
           
-          dateFormatter(row2)
-          timeLeft(row2)
-
-          console.log(row2)
-          
-          try{ 
-            if (row1[0].role_name ==="administrator") {
+          pool.getConnection((err, connection) => {
+          if (err) return res.send({error:"cannot connect to databse"});
+          console.log("Connected as ID" + connection.threadId);
+          //Use the connection
+          const sql =
+            "SELECT * FROM user,role WHERE service_num=? AND password= ? AND role.id=user.role;SELECT * FROM user,course WHERE user.course_id <>0 AND user.course_id=course.course_id"
+          connection.query(sql, [service_num_upper, password], (err, rows) => {
+            connection.release();
             
-              res.render("admin",{row1:row2,layout: "main"});
-            } else if (row1[0].role_name === "staff") {
-              console.log(row1[0].role_name)
-              res.render("home",{ row1:row2,layout: "staff" });
+            const row = JSON.parse(JSON.stringify(rows));
+            const row1= row[0]
+            const row2= row[1]
+  
+            
+            dateFormatter(row2)
+            timeLeft(row2)
+  
+           
+            
+            try{ 
+              if (row1[0].role_name ==="administrator") {
               
-            }          
-          }catch(e){
-            res.send("Error")
+                res.render("admin",{row1:row2,layout: "main"});
+              } else if (row1[0].role_name === "staff") {
+               
+                res.render("home",{ row1:row2,layout: "staff" });
+                
+              }          
+            }catch(e){
+              return res.render("login",{alert: "Incorrect Service Number Or Password",layout:"login"})
+  
+            }           
+            
+             });
+        });
+        
+  }
 
-          }           
-          
-           });
-      });
-      
-}
+}catch(e){res.send({error:"Check Internet Connection"})}
+
 
 
 //dashboard
