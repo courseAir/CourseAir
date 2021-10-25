@@ -10,6 +10,9 @@ router.get("/", userController.landingPg)
 router.get("/login", userController.home)
 router.post("/login",userController.login)
 
+//dashboard
+router.get("/dashboard", userController.dashboard)
+
 //Render and add a base
 router.get("/view-Base",adminController.viewBase)
 

@@ -91,3 +91,33 @@ exports.login=(req,res)=>{
 }
 
 
+//dashboard
+exports.dashboard= (req, res) => {
+    
+   
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("Connected as ID" + connection.threadId);
+    //Use the connection
+
+    const sql =
+      " SELECT * FROM user,course WHERE user.course_id <>0 AND user.course_id=course.course_id"
+    connection.query(
+      
+      sql,
+      
+      (err, rows) => {
+        //When done with the connection, release it
+        connection.release();
+        dateFormatter(rows)
+          timeLeft(rows)
+        console.log(rows)
+         if (!err) {
+          res.render("admin", {row1:rows});
+        } else {
+          console.log(err);
+        }
+      }
+    );
+  });
+};
