@@ -1,90 +1,61 @@
-{{#if alert}}
-  <div class="alert alert-success alert-dismissible fade show" role="alert">
-    {{alert}}
-    <button
-      type="button"
-      class="btn-close"
-      data-bs-dismiss="alert"
-      aria-label="Close"
-    ></button>
-  </div>
-{{/if}}
 
 
-<form
-  class="row g-3 needs-validation"
-  method="POST"
-  action="/addUser"
-  
->
-  <div class="col-6">
-  <div class="form-floating mb-3">
+ <div class="container" style="margin-left: 200px;">
+    <form class="needs-validation " method="POST"  action="/addUser" novalidate>
+        <div class="form-row">
+          <div class="col-md-6 mb-3">
+            <label for="validationFirstName"></label>
+            <input type="text" class="form-control" id="validationDefault01" name="first_name" placeholder="First Name" required>
+            <div class="valid-feedback">
+              Correct First Name!
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="validationLastName"></label>
+            <input type="text" class="form-control" id="validationDefault02" placeholder="Last Name" name="last_name" required>
+            <div class="valid-feedback">
+              Correct Last Name!
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col-md-6 mb-3">
+            <label for="validationServiceNumber"></label>
+            <input type="text" class="form-control" id="validationDefault02" placeholder="Service Number"  name="service_num" required>
+            <div class="valid-feedback">
+              Correct Service Number!
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="validationPassword"></label>
+            <input type="password" class="form-control" id="validationPassword" placeholder="Password" name="password" required>
+            <div class="valid-feedback">
+              Correct Password!
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col-md-6 mb-3">
+            
+              <select
+              class="form-select issues form-select-sm"
+              aria-label=".form-select-sm example"
+              name="role"
+            >
+              <option selected>Role</option>
+              {{#each rows}}
+                <option value="{{this.id}} {{this.role_name}}">
+                  {{this.role_name}}</option>
 
-    <input
-      type="text"
-      class="form-control"
-      id="floatingInput"
-      placeholder="First Name"
-      name="first_name"
-      required
-    />
-    <label for="floatingInput">First Name</label>
-  </div>
-</div>
-
-<div class="col-6">
-  <div class="form-floating mb-3">
-
-    <input
-      type="text"
-      class="form-control"
-      id="floatingInput"
-      placeholder="Last Name"
-      name="last_name"
-      required
-    />
-    <label for="floatingInput">Last Name</label>
-  </div>
-</div>
-
-<div class="col-6">
-  <div class="form-floating mb-3">
-
-    <input
-      type="text"
-      class="form-control"
-      id="floatingInput"
-      placeholder="Service Number"
-      name="service_num"
-      required
-    />
-    <label for="floatingInput">Service Number</label>
-  </div>
-</div>
-
-<div class="col-6">
-  <div class="form-floating mb-3">
-    <label for="exampleInputPassword1" class="form-label" >Password</label>
-    <input type="password" class="form-control" id="floating-input" name="password" required/>
-  </div>
-
-</div>
- <select
-      class="form-select issues form-select-sm"
-      aria-label=".form-select-sm example"
-      name="role"
-    >
-      <option selected>Role</option>
-      {{#each rows}}
-        <option value="{{this.id}} {{this.role_name}}">
-           {{this.role_name}}</option>
-
-      {{/each}}
-    </select>
-<div class="col-12 d-grid">
-  <button class="btn btn-primary" type="submit">Submit</button>
-</div>
-
-</form>
-
-
+              {{/each}}
+            </select>
+            
+            <div class="invalid-feedback">
+              Please provide a valid role.
+            </div>
+          </div>
+        </div>
+        
+        <button class="btn btn-primary" type="submit">Add User</button>
+      </form>
+      </div>

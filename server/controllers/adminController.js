@@ -64,7 +64,7 @@ exports.viewBase = (req, res) => {
           connection.release();
                    
           if (!err) {
-            res.render("addUser",{rows});
+            res.render("addUser",{rows,layout:"main"});
           } else {
             console.log(err);
           }
@@ -77,10 +77,11 @@ exports.viewBase = (req, res) => {
   };
 
   exports.saveUser= (req, res) => {
-    
+    console.log(req.body)
     const { first_name,last_name,service_num,password,role } = req.body;
     const roleArr = role.split(/[^0-9a-zA-Z]+/g);
     const roleID = roleArr[0];
+    const service_numCaps= service_num.toUpperCase()
     pool.getConnection((err, connection) => {
       if (err) throw err;
       console.log("Connected as ID" + connection.threadId);
@@ -91,7 +92,7 @@ exports.viewBase = (req, res) => {
       connection.query(
         
         sql,
-        [service_num,first_name,last_name,roleID,password],
+        [service_numCaps,first_name,last_name,roleID,password],
         (err, rows) => {
           //When done with the connection, release it
           connection.release();
