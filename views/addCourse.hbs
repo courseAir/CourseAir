@@ -11,7 +11,7 @@
 {{/if}}
 
 <div style="max-width: 800px;margin:auto;">
-  <table class="table table-bordered" >
+  <table class="table table-dark table-bordered" >
     <thead class="thead-dark">
       <tr>
         <th scope="col">Course Name</th>
@@ -34,9 +34,11 @@
   </table>
 </div>
 
-<form class="row g-3 needs-validation" method="POST" action="/addCourse" style="max-width: 800px;margin:auto;">
-  
-    <div class="col-12 d-grid">
+    <div class="container" style="marginTop: 200px;">
+        <div class="form-row">
+  <form class="row g-3 needs-validation" method="POST" action="/addCourse" style="max-width: 800px;margin:auto;">
+  <div class="form-row">
+    <div class="col-md-6 ">
       <label for="floatingInput">Course</label>
       <input
         type="text"
@@ -48,10 +50,10 @@
       />
 
     </div>
-  
+   </div>
 
-  <div class="col-6">
-    <div class="col-12 d-grid">
+   <div class="form-row ">
+    <div class="col-md-6  ">
       <label for="floatingInput">Start Date</label>
       <input
         type="date"
@@ -63,10 +65,10 @@
       />
 
     </div>
-  </div>
+   </div>
 
-   <div class="col-6">
-    <div class="col-12 d-grid">
+   <div class="form-row ">
+    <div class="col-md-6 ">
       <label for="floatingInput">End Date</label>
       <input
         type="date"
@@ -78,10 +80,14 @@
       />
 
     </div>
-  </div>
+    </div>
 
-  <div class="col-12 d-grid">
+  <div class="col-md-6 ">
     <button class="btn btn-primary" type="submit">Add</button>
   </div>
+
+</div>
+    </div>
+
 
 </form>

@@ -164,7 +164,7 @@ exports.viewCourse= (req, res) => {
         dateFormatter(row)
        
          if (!err) {
-          res.render("addCourse", {rows:row});
+          res.render("addCourse", {rows:row, layout:"main"});
         } else {
           console.log(err);
         }
@@ -201,7 +201,7 @@ exports.addCourse= (req, res) => {
         //format date
         dateFormatter(row2)
          if (!err) {
-          res.render("addCourse", {rows:row2});
+          res.render("addCourse", {rows:row2, layout:"main"});
         } else {
           console.log(err);
         }
