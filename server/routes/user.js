@@ -35,5 +35,9 @@ router.post("/trackingInfo", adminController.saveTrackingInfo)
 //delete
 router.get("/:service_num", adminController.delete);
 
+//edit
+router.get('/editInfo/:service_num', adminController.edit);
+router.post('/editInfo/:service_num', adminController.save);
+
 
 module.exports = router;

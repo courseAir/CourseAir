@@ -1,4 +1,5 @@
 const mysql = require("mysql")
+const bcrypt= require("bcrypt")
 const moment= require("moment")
 
 moment.defaultFormat = "DD.MM.YYYY"
@@ -90,23 +91,24 @@ exports.viewBase = (req, res) => {
        
   };
 
-  exports.saveUser= (req, res) => {
-    console.log(req.body)
+  exports.saveUser=  async (req, res) => {
+    
     const { first_name,last_name,service_num,password,role } = req.body;
     const roleArr = role.split(/[^0-9a-zA-Z]+/g);
     const roleID = roleArr[0];
     const service_numCaps= service_num.toUpperCase()
-    pool.getConnection((err, connection) => {
+    pool.getConnection(async(err, connection) => {
       if (err) throw err;
       console.log("Connected as ID" + connection.threadId);
       //Use the connection
-  
+      
+      let hashedPass= await bcrypt.hash(password,8)
       const sql =
         "INSERT INTO user(service_num,first_name,last_name,role,password) VALUES (?,?,?,?,?); SELECT * FROM user,role WHERE user.role=role.id"
-      connection.query(
+       connection.query(
         
         sql,
-        [service_numCaps,first_name,last_name,roleID,password],
+        [service_numCaps,first_name,last_name,roleID,hashedPass],
         (err, rows) => {
           //When done with the connection, release it
           connection.release();
@@ -309,6 +311,66 @@ exports.delete = (req, res) => {
           res.render("admin", { alert: "Delete operation not successful"});
         }
        
+      }
+    );
+  });
+};
+
+// Edit user
+exports.edit= (req, res) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("Connected as ID" + connection.threadId);
+    //Use the connection
+
+    const sql = "SELECT user.course_id,course.course_id,service_num,user.first_name,user.last_name,course.course_name,course.start_date,course.end_date FROM user,course WHERE service_num = ? AND user.course_id=course.course_id;SELECT * FROM course";
+    connection.query(
+      sql,
+      [req.params.service_num],
+      (err, rows) => {
+        //When done with the connection, release it
+        connection.release();
+        const row = JSON.parse(JSON.stringify(rows));
+        const row1=row[0] 
+        const row2=row[1]     
+        console.log(row2)    
+        if (!err) {
+          res.render("editInfo",{rows:row1,row2,layout:"edit"});
+        } else {
+          console.log(err);
+        }
+      }
+    );
+  });
+};
+
+//Save
+exports.save= (req, res) => {
+  const {course}=req.body
+  const courseArr = course.split(/[^0-9a-zA-Z]+/g)
+  const courseID= courseArr[0]
+ 
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+   
+    //Use the connection
+
+    const sql = "UPDATE user SET course_id=? WHERE service_num=?;SELECT user.course_id,course.course_id,service_num,user.first_name,user.last_name,course.course_name,course.start_date,course.end_date FROM user,course WHERE service_num = ? AND user.course_id=course.course_id";
+    connection.query(
+      sql,
+      [courseID,req.params.service_num,req.params.service_num],
+      (err, rows) => {
+        //When done with the connection, release it
+        connection.release();
+        const row = JSON.parse(JSON.stringify(rows));
+        const row1=row[1]
+        console.log(row1)
+          
+        if (!err) {
+          res.render("editInfo",{layout:"edit",rows:row1,alert: "The user's information has been updated successfully. Click on Home"});
+        } else {
+          console.log(err);
+        }
       }
     );
   });

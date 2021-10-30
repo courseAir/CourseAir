@@ -1,0 +1,104 @@
+{{#if alert}}
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{alert}}
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+{{/if}}
+
+{{#each rows}}
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Edit</li>
+  </ol>
+</nav>
+
+<form
+  class="row g-3 needs-validation"
+  method="POST"
+  action="/editInfo/{{this.service_num}}"
+  style="margin-left:20;"
+  
+>
+ <div class="form-row ">
+  <div class="col-6-sm">
+  <div class="form-floating mb-3">
+
+    <input
+      type="text"
+      class="form-control"
+      id="floatingInput"
+      value="{{this.service_num}}"
+      placeholder="service number"
+      name="service_num"
+      readonly
+    />
+    <label for="floatingInput">Service Number</label>
+  </div>
+</div>
+</div>
+
+<div class="form-row">
+  <div class="col-6-sm">
+  <div class="form-floating mb-3">
+
+    <input
+      type="text"
+      class="form-control"
+      id="floatingInput"
+      value="{{this.first_name}}"
+      placeholder="First Name"
+      name="first_name"
+      readonly
+    />
+    <label for="floatingInput">First Name</label>
+  </div>
+</div>
+</div>
+
+<div class="form-row">
+<div class="col-6-sm">
+  <div class="form-floating mb-3">
+
+    <input
+      type="text"
+      class="form-control"
+      id="floatingInput"
+      placeholder="Last Name"
+      value="{{this.last_name}}"
+      name="last_name"
+      readonly
+    />
+    <label for="floatingInput">Last Name</label>
+  </div>
+</div>
+</div>
+{{/each}}
+
+
+<div class="form-row">
+<div class="col-6-sm mb-3">
+   <select
+      class="form-select Base form-select"
+      aria-label=".form-select-sm example"
+      name="course"
+    >
+      <option selected >Course</option>
+      {{#each row2}}
+        <option value="{{this.course_id}} {{this.course_name}}">
+           {{this.course_name}}</option>
+
+      {{/each}}
+    </select>
+</div>
+</div>
+<div class="col-6-sm d-grid">
+  <button class="btn btn-primary" type="submit">Submit</button>
+</div>
+</form>
