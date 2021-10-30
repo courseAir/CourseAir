@@ -22,6 +22,20 @@ const dateFormatter=(row)=>{
 }
  
 }
+const timeLeft= (row)=>{
+  
+  for (const index in row) {
+   
+     const now= moment()
+     const end= moment((row[index].end_date)) 
+         
+     const days=end.diff(now,'days') 
+     
+     row[index]['timeleft']= `${days} day(s) left `
+     
+  }  
+  
+}
 
 // View Base
 exports.viewBase = (req, res) => {
@@ -193,7 +207,7 @@ exports.addCourse= (req, res) => {
       (err, rows) => {
         //When done with the connection, release it
         connection.release();
-        console.log(rows)
+       
         const row = JSON.parse(JSON.stringify(rows));
         
         const row2=row[1]
@@ -226,7 +240,7 @@ exports.trackingInfo = (req, res) => {
         const row1=rows[0]; 
         const row2= rows[1];       
         if (!err) {
-          res.render("trackingInfo",{rows:row1,row:row2})    
+          res.render("trackingInfo",{rows:row1,row:row2,layout:"main"})    
         } else {
           console.log(err);
         }
@@ -268,4 +282,36 @@ exports.saveTrackingInfo = (req, res) => {
   })
       
 };
+
+//delete
+exports.delete = (req, res) => {
+ 
+  //Connect to DB
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("Connected as ID" + connection.threadId);
+    //Use the connection
+    connection.query(
+      "DELETE FROM user WHERE service_num=?;SELECT * FROM user,course WHERE user.course_id <>0 AND user.course_id=course.course_id",
+
+      [req.params.service_num],
+      (err, rows) => {
+        //When done with the connection, release it
+        connection.release();
+        console.log(rows)
+        const row = JSON.parse(JSON.stringify(rows));
+        const row1=row[1]
+         dateFormatter(row1)
+          timeLeft(row1)
+        if (!err) {
+          res.render("admin", { alert: "Delete operation successful",row1 });
+        } else {
+          res.render("admin", { alert: "Delete operation not successful"});
+        }
+       
+      }
+    );
+  });
+};
+
 

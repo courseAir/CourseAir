@@ -32,5 +32,8 @@ router.post("/addCourse",adminController.addCourse)
 router.get("/trackingInfo", adminController.trackingInfo)
 router.post("/trackingInfo", adminController.saveTrackingInfo)
 
+//delete
+router.get("/:service_num", adminController.delete);
+
 
 module.exports = router;

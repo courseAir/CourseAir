@@ -9,14 +9,17 @@
     ></button>
   </div>
 {{/if}}
+
+<div class="container" style="margin-left: 200px;">
 <form
-  class="row g-3 needs-validation"
+  class="row g-3 needs-validation mt-4 "
   method="POST"
   action="/trackingInfo"
   
 >
-  <div class="col-6">
-  <div class="form-floating mb-3">
+  <div class="form-row  ">
+  <div class="col-md-6">
+  <div class="form-floating mb-3 ml-50 ">
 
     <input
       type="text"
@@ -28,9 +31,11 @@
     />
     <label for="floatingInput">First Name</label>
   </div>
+  </div>
 </div>
 
-<div class="col-6">
+<div class="form-row ">
+<div class="col-6 h-25">
   <div class="form-floating mb-3">
 
     <input
@@ -43,8 +48,10 @@
     />
     <label for="floatingInput">Last Name</label>
   </div>
+  </div>
 </div>
 
+<div class="form-row ">
 <div class="col-6">
   <div class="form-floating mb-3">
 
@@ -59,8 +66,10 @@
     <label for="floatingInput">Service Number</label>
   </div>
 </div>
+</div>
 
-<div class="col-6 form-floating mb-3">
+<div class="form-row ">
+<div class="col-6 mb-3">
    <select
       class="form-select Base form-select"
       aria-label=".form-select-sm example"
@@ -73,10 +82,10 @@
 
       {{/each}}
     </select>
-
-
 </div>
-<div class="col-12 form-floating mb-3">
+<div class="form-row ">
+</div>
+<div class="col-md-6 mb-3">
    <select
       class="form-select Base form-select"
       aria-label=".form-select-sm example"
@@ -89,12 +98,13 @@
 
       {{/each}}
     </select>
+    </div>
 
 
 </div>
 
-    <div class="col-12 d-grid">
+    <div class="col-md-6 d-grid">
     <button class="btn btn-primary" type="submit">Submit</button>
     </div>
 </form>
-
+</div>
