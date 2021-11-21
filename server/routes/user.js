@@ -10,11 +10,12 @@ router.get("/", userController.landingPg)
 router.get("/login", userController.home)
 router.post("/login",userController.login)
 
+//Logout
+router.get("/logout",userController.logout)
 //dashboard
-router.get("/dashboard", userController.dashboard)
+router.get("/dashboard",userController.dashboard)
 
-//Render and add a base
-router.get("/view-Base",adminController.viewBase)
+
 
 
 //Add user form

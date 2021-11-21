@@ -1,8 +1,9 @@
 const mysql = require("mysql")
 const bcrypt= require("bcrypt")
 const moment= require("moment")
-
+const {state} = require("./userController")
 moment.defaultFormat = "DD.MM.YYYY"
+const {timeLeft,dateFormatter}= require('./functions')
 require("dotenv").config();
 //Connection Pool
 const pool = mysql.createPool({
@@ -14,61 +15,13 @@ const pool = mysql.createPool({
   multipleStatements: true
 });
 
-//function
-
-const dateFormatter=(row)=>{
-  for (const date in row) {
-    row[date].start_date =moment(row[date].start_date).format('DD/MM/YYYY').toString() 
-    row[date].end_date=moment(row[date].end_date).format('DD/MM/YYYY').toString() 
-}
- 
-}
-const timeLeft= (row)=>{
-  
-  for (const index in row) {
-   
-     const now= moment()
-     const end= moment((row[index].end_date)) 
-         
-     const days=end.diff(now,'days') 
-     
-     row[index]['timeleft']= `${days} day(s) left `
-     
-  }  
-  
-}
-
-// View Base
-exports.viewBase = (req, res) => {
-    pool.getConnection((err, connection) => {
-      if (err) throw err;
-      console.log("Connected as ID" + connection.threadId);
-      //Use the connection
-  
-      const sql = "SELECT * FROM base ";
-      connection.query(
-        sql,
-  
-        (err, rows) => {
-          //When done with the connection, release it
-          connection.release();
-                    
-          if (!err) {
-            res.render("view-Base", { rows });
-          } else {
-            console.log(err);
-          }
-        }
-      );
-    });
-  };
 
 
-
-  //Add User
+ //Add User
   exports.addUser = (req, res) => {
     
-    const sql =
+    if(state.Adminvalidate){
+      const sql =
     "SELECT * FROM role";
     pool.getConnection((err, connection) => {
       connection.query(
@@ -86,6 +39,10 @@ exports.viewBase = (req, res) => {
         }
       )
     })
+    }else{
+      return res.json("Access restricted,Please Authenticate")
+    }
+    
   
     
        
@@ -102,11 +59,34 @@ exports.viewBase = (req, res) => {
       console.log("Connected as ID" + connection.threadId);
       //Use the connection
       
+    if(password.length<8){
+      let data;
+        const sql =
+    "SELECT * FROM role";
+    pool.getConnection((err, connection) => {
+      connection.query(
+    
+        sql,
+         (err, rows) => {
+          //When done with the connection, release it
+          connection.release();
+                  
+          if (!err) {
+            return res.render("addUser",{alert: "Password is less than 8 characters",layout:"main",rows})
+          } else {
+            console.log(err);
+          }
+        }
+      )
+     })
+     return;
+     
+      } 
+
       let hashedPass= await bcrypt.hash(password,8)
       const sql =
         "INSERT INTO user(service_num,first_name,last_name,role,password) VALUES (?,?,?,?,?); SELECT * FROM user,role WHERE user.role=role.id"
        connection.query(
-        
         sql,
         [service_numCaps,first_name,last_name,roleID,hashedPass],
         (err, rows) => {
@@ -122,22 +102,57 @@ exports.viewBase = (req, res) => {
             console.log(err);
           }
         }
+        
       );
     });
+  
   };
 
   //view users
 
   exports.viewusers= (req, res) => {
+    if(state.Adminvalidate){
+      pool.getConnection((err, connection) => {
+        if (err) throw err;
+        console.log("Connected as ID" + connection.threadId);
+        //Use the connection
     
+        const sql =
+          " SELECT * FROM user,role WHERE user.role=role.id"
+        connection.query(
+          
+          sql,
+          
+          (err, rows) => {
+            //When done with the connection, release it
+            connection.release();
+            
+             if (!err) {
+              res.render("view-user", {rows});
+            } else {
+              console.log(err);
+            }
+          }
+        );
+      });
+  
+    }else{
+      return res.json("Access restricted, Please Authenticate, Please Authenticate")
+    }
    
+      };
+
+//View  course
+exports.viewCourse= (req, res) => {
+    
+  if(state.Adminvalidate){
     pool.getConnection((err, connection) => {
       if (err) throw err;
       console.log("Connected as ID" + connection.threadId);
       //Use the connection
   
       const sql =
-        " SELECT * FROM user,role WHERE user.role=role.id"
+        " SELECT * FROM course"
       connection.query(
         
         sql,
@@ -145,48 +160,24 @@ exports.viewBase = (req, res) => {
         (err, rows) => {
           //When done with the connection, release it
           connection.release();
-          
+          const row = JSON.parse(JSON.stringify(rows));
+           
+          //Formatting date to be displayed in front end
+          dateFormatter(row)
+         
            if (!err) {
-            res.render("view-user", {rows});
+            res.render("addCourse", {rows:row, layout:"main"});
           } else {
             console.log(err);
           }
         }
       );
     });
-  };
-
-//View  course
-exports.viewCourse= (req, res) => {
     
-   
-  pool.getConnection((err, connection) => {
-    if (err) throw err;
-    console.log("Connected as ID" + connection.threadId);
-    //Use the connection
-
-    const sql =
-      " SELECT * FROM course"
-    connection.query(
-      
-      sql,
-      
-      (err, rows) => {
-        //When done with the connection, release it
-        connection.release();
-        const row = JSON.parse(JSON.stringify(rows));
-         
-        //Formatting date to be displayed in front end
-        dateFormatter(row)
-       
-         if (!err) {
-          res.render("addCourse", {rows:row, layout:"main"});
-        } else {
-          console.log(err);
-        }
-      }
-    );
-  });
+  }else{
+    return res.json("Access restricted, Please Authenticate")
+  }
+  
 };
 
 //Add Course
@@ -229,7 +220,8 @@ exports.addCourse= (req, res) => {
 
 //Tracking Info
 exports.trackingInfo = (req, res) => {
-  const sql =
+  if(state.Adminvalidate){
+    const sql =
   "SELECT * FROM base;SELECT * FROM course";
   pool.getConnection((err, connection) => {
     connection.query(
@@ -249,12 +241,18 @@ exports.trackingInfo = (req, res) => {
       }
     )
   })
+
+  }else{
+    return res.json("Access restricted,Please Authenticate")
+  }
+  
       
 };
 
 //Save Tracking info
 exports.saveTrackingInfo = (req, res) => {
-   const {first_name,last_name,service_num,base,course}= req.body
+
+    const {first_name,last_name,service_num,base,course}= req.body
    console.log(req.body)
   //Getting index of the base and course
   const baseArr = base.split(/[^0-9a-zA-Z]+/g)
@@ -263,7 +261,7 @@ exports.saveTrackingInfo = (req, res) => {
   const courseArr = course.split(/[^0-9a-zA-Z]+/g)
   const courseID= courseArr[0]
   
-  const sql =
+    const sql =
   "INSERT INTO user(first_name,last_name,service_num,base_id,course_id) VALUES (?,?,?,?,?) ";
   pool.getConnection((err, connection) => {
     connection.query(
@@ -277,12 +275,15 @@ exports.saveTrackingInfo = (req, res) => {
         if (!err) {
           res.render("trackingInfo", { alert: "Tracking Info Added"})    
         } else {
-          console.log(err);
+          res.json("Multiple entries for one person is not allowed. Please authenticate by logging in again.")
         }
       }
     )
   })
-      
+  
+    
+   
+     
 };
 
 //delete
@@ -300,7 +301,7 @@ exports.delete = (req, res) => {
       (err, rows) => {
         //When done with the connection, release it
         connection.release();
-        console.log(rows)
+        
         const row = JSON.parse(JSON.stringify(rows));
         const row1=row[1]
          dateFormatter(row1)

@@ -1,30 +1,18 @@
-const moment= require("moment")
+const {timeLeft,dateFormatter}= require('./functions')
 const mysql = require("mysql")
 const bcrypt= require("bcrypt")
 require("dotenv").config();
 
-//Functions
-const dateFormatter=(row)=>{
-  for (const date in row) {
-    row[date].start_date =moment(row[date].start_date).format('DD/MM/YYYY').toString() 
-    row[date].end_date=moment(row[date].end_date).format('DD/MM/YYYY').toString() 
-}
+
+
+let state={
+  Adminvalidate:false,
+  Uservalidate:false
 }
 
-const timeLeft= (row)=>{
-  
-  for (const index in row) {
-   
-     const now= moment()
-     const end= moment((row[index].end_date)) 
-         
-     const days=end.diff(now,'days') 
-     
-     row[index]['timeleft']= `${days} day(s) left `
-     
-  }  
-  
-}
+
+
+
 
 
 
@@ -38,6 +26,7 @@ const pool = mysql.createPool({
   multipleStatements: true
 });
 
+
 //for bcrypt
 const db = mysql.createConnection({
   connectionLimit: 100,
@@ -50,24 +39,24 @@ const db = mysql.createConnection({
 
 
 //Landing Page
-exports.landingPg=(req,res)=>{
+landingPg=(req,res)=>{
     res.render("index", {layout: "lpg"})
 }
 
-exports.home=(req,res)=>{
+home=(req,res)=>{
     res.render("login",{layout:"login"})
         
 }
 
 try{
-  exports.login=  (req,res)=>{
+  login=  (req,res)=>{
     
       const { service_num,password}= req.body;
       service_num_upper= service_num.toUpperCase()
       
-        db.query('SELECT password FROM user WHERE service_num=? ' ,[service_num_upper],async (error,results)=>{
-          if(error){
-            return res.render("login",{alert: "Not connected to db",layout:"login"})
+        db.query('SELECT service_num,password FROM user WHERE service_num=? ' ,[service_num_upper],async (error,results)=>{
+          if(error || results[0]?.password===undefined){
+            return res.render("login",{alert: "Not connected to db or Wrong credentials provided",layout:"login"})
           }else{
             
             let validPass= await bcrypt.compare(password,results[0].password)
@@ -85,19 +74,28 @@ try{
                  const row1= row[0]
                  const row2= row[1]
        
-                 
-                 dateFormatter(row2)
+                 console.log(row2)
                  timeLeft(row2)
+                 dateFormatter(row2)
+                 
        
                 
-                 
+                        
                  
                    if (row1[0].role_name ==="administrator") {
-                   
+                     
+                     req.session.user=results
+                     
                      res.render("admin",{row1:row2,layout: "main"});
+                     state.Adminvalidate=true;
+                     state.Uservalidate=true;
+                     
                    } else if (row1[0].role_name === "staff") {
                     
+                    req.session.user=results
                      res.render("home",{ row1:row2,layout: "staff" });
+                     state.Adminvalidate=true;
+                     state.Uservalidate=true;
                      
                    }          
                 
@@ -128,35 +126,58 @@ try{
   res.send({error:"Check Internet Connection"})
 }
 
-
+//logout
+logout=  (req,res)=>{
+  req.session.destroy(function(err){
+    if(err){
+        res.send("Log Out!")
+    }else{
+      state.Adminvalidate=false,
+      state.Uservalidate=false,
+      res.redirect("/")
+    }
+    
+})
+            
+        
+   
+ 
+}
 
 //dashboard
-exports.dashboard= (req, res) => {
-    
-   
-  pool.getConnection((err, connection) => {
-    if (err) throw err;
-    console.log("Connected as ID" + connection.threadId);
-    //Use the connection
-
-    const sql =
-      " SELECT * FROM user,course WHERE user.course_id <>0 AND user.course_id=course.course_id"
-    connection.query(
-      
-      sql,
-      
-      (err, rows) => {
-        //When done with the connection, release it
-        connection.release();
-        dateFormatter(rows)
-          timeLeft(rows)
-        console.log(rows)
-         if (!err) {
-          res.render("admin", {row1:rows});
-        } else {
-          console.log(err);
+dashboard= (req, res) => {
+  if(state.Adminvalidate){
+    pool.getConnection((err, connection) => {
+      if (err) throw err;
+      console.log("Connected as ID" + connection.threadId);
+      //Use the connection
+  
+      const sql =
+        " SELECT * FROM user,course WHERE user.course_id <>0 AND user.course_id=course.course_id"
+      connection.query(
+        
+        sql,
+        
+        (err, rows) => {
+          //When done with the connection, release it
+          connection.release();
+          dateFormatter(rows)
+            timeLeft(rows)
+          console.log(rows)
+           if (!err) {
+            res.render("admin", {row1:rows});
+          } else {
+            console.log(err);
+          }
         }
-      }
-    );
-  });
+      );
+    });
+  }else{
+    return res.json("Access restricted,Please Authenticate")
+  }
+  
 };
+
+
+
+module.exports={state,dashboard,login,landingPg,home,logout}
