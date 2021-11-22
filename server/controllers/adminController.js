@@ -3,7 +3,7 @@ const bcrypt= require("bcrypt")
 const moment= require("moment")
 const {state} = require("./userController")
 moment.defaultFormat = "DD.MM.YYYY"
-const {timeLeft,dateFormatter,connectToDB}= require('./functions')
+const {timeLeft,dateFormatter}= require('./functions')
 require("dotenv").config();
 //Connection Pool
 const pool = mysql.createPool({

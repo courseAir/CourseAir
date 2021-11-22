@@ -1,4 +1,4 @@
-const {timeLeft,dateFormatter,connectToDB}= require('./functions')
+const {timeLeft,dateFormatter}= require('./functions')
 const mysql = require("mysql")
 const bcrypt= require("bcrypt")
 require("dotenv").config();
