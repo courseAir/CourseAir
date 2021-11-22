@@ -304,8 +304,9 @@ exports.delete = (req, res) => {
         
         const row = JSON.parse(JSON.stringify(rows));
         const row1=row[1]
+        timeLeft(row1)
          dateFormatter(row1)
-          timeLeft(row1)
+          
         if (!err) {
           res.render("admin", { alert: "Delete operation successful",row1 });
         } else {
