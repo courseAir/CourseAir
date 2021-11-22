@@ -3,7 +3,7 @@ const bcrypt= require("bcrypt")
 const moment= require("moment")
 const {state} = require("./userController")
 moment.defaultFormat = "DD.MM.YYYY"
-const {timeLeft,dateFormatter}= require('./functions')
+const {timeLeft,dateFormatter,connectToDB}= require('./functions')
 require("dotenv").config();
 //Connection Pool
 const pool = mysql.createPool({
@@ -14,7 +14,6 @@ const pool = mysql.createPool({
   database:process.env.DB_NAME,
   multipleStatements: true
 });
-
 
 
  //Add User
@@ -363,6 +362,7 @@ exports.save= (req, res) => {
       (err, rows) => {
         //When done with the connection, release it
         connection.release();
+      
         const row = JSON.parse(JSON.stringify(rows));
         const row1=row[1]
         console.log(row1)

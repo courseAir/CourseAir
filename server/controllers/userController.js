@@ -1,4 +1,4 @@
-const {timeLeft,dateFormatter}= require('./functions')
+const {timeLeft,dateFormatter,connectToDB}= require('./functions')
 const mysql = require("mysql")
 const bcrypt= require("bcrypt")
 require("dotenv").config();
@@ -69,7 +69,7 @@ try{
                  "SELECT * FROM user,role WHERE service_num=? AND password= ? AND role.id=user.role;SELECT * FROM user,course WHERE user.course_id <>0 AND user.course_id=course.course_id"
                connection.query(sql, [service_num_upper, results[0].password], (err, rows) => {
                  connection.release();
-                 console.log(rows)
+                 
                  const row = JSON.parse(JSON.stringify(rows));
                  const row1= row[0]
                  const row2= row[1]

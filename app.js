@@ -57,10 +57,44 @@ app.use(express.static("public"));
 app.engine("hbs",exphbs({extname: ".hbs"}))
 app.set("view engine","hbs")
 
+//Connection Pool
+const pool = {
+  connectionLimit: 100,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+};
 
+//Connect to DB
+ const connectToDB= function(){
+   connection=mysql.createConnection(pool)
+   connection.connect(function(err){
+     if(err){
+       setTimeout(connectToDB,2000)
+       
+     }
+   })
+   
+   connection.on('error',function(err){
+     if(err.code==='PROTOCOL_CONNECTION_LOST'){
+      connectToDB()
+      console.log("Whyyyyy")
+     }else{
+       throw err;
+     }
+   })
+ }
 
-  
+ 
+ 
+ try {
   app.use("/",  routes)
+ } catch (error) {
+  connectToDB()
+  app.use("/",  routes)
+ }
+ 
   
   app.listen(port, () => {
     console.log(`Listening on port ${port}`);

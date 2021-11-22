@@ -1,4 +1,5 @@
 const moment= require("moment")
+const mysql = require("mysql")
 //Functions
 const dateFormatter=(row)=>{
     for (const date in row) {
@@ -22,4 +23,32 @@ const dateFormatter=(row)=>{
     
   }
 
-  module.exports={dateFormatter,timeLeft}
+  const pool = {
+    connectionLimit: 100,
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
+  };
+  
+  //Connect to DB
+   const connectToDB= function(){
+     connection=mysql.createConnection(pool)
+     connection.connect(function(err){
+       if(err){
+         setTimeout(connectToDB,2000)
+         
+       }
+     })
+  
+     connection.on('error',function(err){
+       if(err.code==='PROTOCOL_CONNECTION_LOST'){
+        connectToDB()
+       }else{
+         throw err;
+       }
+     })
+   }
+  
+
+  module.exports={dateFormatter,timeLeft,connectToDB}
