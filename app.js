@@ -64,8 +64,12 @@ app.set("view engine","hbs")
  
   app.use("/",  routes)
 
+  try {
+    app.listen(port, () => {
+      console.log(`Listening on port ${port}`);
+      
+    });
+  } catch (error) {
+    res.json("Cannot connect")
+  }
   
-  app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
-    
-  });

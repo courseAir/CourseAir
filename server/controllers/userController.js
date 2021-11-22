@@ -161,8 +161,10 @@ dashboard= (req, res) => {
         (err, rows) => {
           //When done with the connection, release it
           connection.release();
+          console.log(rows)
+          timeLeft(rows)
           dateFormatter(rows)
-            timeLeft(rows)
+            
           console.log(rows)
            if (!err) {
             res.render("admin", {row1:rows});
