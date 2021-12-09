@@ -16,7 +16,7 @@ const dateFormatter=(row)=>{
        const end= moment((row[index].end_date)) 
        
        const days= end.diff(now,'days') 
-       if(!isNaN(days) || days>0){
+       if(!isNaN(days) && days>0){
         row[index]['timeleft']= `${days} day(s) left `
        }else{
         row[index]['timeleft']= `0 day(s) left `
